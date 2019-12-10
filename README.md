@@ -98,16 +98,124 @@ Now, you have to set WSL zsh as the default terminal in fluent terminal, you can
 
 
 ## Extras
-If you have followed all the steps in this guide, you will now have a very nice looking terminal that's actually fully functional, you can follow the next steps if you are interested in things like how to install python, nodej and docker.
+If you have followed all the steps in this guide, you will now have a very nice looking terminal that's actually fully functional, you can follow the next steps if you are interested in things like how to install python, nodejs and docker.
 
 ## Nodejs
 If you want to install nodejs in your WSL, I highly recommend you to use nvm which is used to install and manage different nodejs versions in your environment, so you can follow the next steps to install nodejs.
-First of all, we need to install some basic build tool for node-gyp - node binaries build tool.
+First of all, we need to install some basic build tool for [node-gyp](https://github.com/nodejs/node-gyp) - node binaries build tool.
 ```bash
 sudo apt-get install build-essential
 ```
+
+Most of the times that I tried to install nvm I had a lot of problems until I found out that I had to export an environment variable before installing nvm, so run the following command.
+```bash
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+```
+
+Install nvm running this command.
+```bash
+# This command install version 0.35.1, check the NVM reference it there are newer versions. 
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+```
+
+Restart your terminal after the installation to make sure `nvm` command works correctly.
+
+Now you can install the latest nodejs version using the following command:
+```bash
+nvm install --lts
+```
+
 ## Python
+Python is actually really easy to install, you just have to run this command and you are all set.
+```bash
+sudo apt install python3 python3-pip ipython3
+```
 
 ## Docker
+Docker is actually just a bit complicated, but you can get over it quickly if you copy and paste the following commands
+1. Install packages to allow apt to use a repository over HTTPS
+```bash
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+```
+
+2. Add Docker’s official GPG key:
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+```
+
+3. Use the following command to set up the stable repository
+```bash
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+```
+
+4. Update the apt package index again
+```bash
+sudo apt-get update
+```
+
+5. And install Docker Community Edition
+```bash
+sudo apt-get install docker-ce
+```
+
+6. Now you need to tell Docker client where the Docker host is (the docker installed in your windows), and you can do that by setting an environment variable called `DOCKER_HOST`.
+```bash
+echo "export DOCKER_HOST=localhost:2375" >> ~/.zshrc
+```
+
+7. Now we need to make sure that you expose the daemon on Windows, otherwise it won't work.
+![1_6XwT-oT7cbw63UFHLjQPzA](https://user-images.githubusercontent.com/20981122/70489471-7f998800-1ac1-11ea-8b29-3c88a5419b3b.png)
+
+
+You can now reopen your terminal and docker will be available in your WSL.
+
+### Docker Compose
+I'm sure you will need to use `docker-compose` so I'm gonna tell you how to install it.
+1. Download the latest version of Docker Compose, use the command.
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+
+2. Next, change the file permissions to allow the new software to be executed on Ubuntu.
+```bash
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+And that's all, reopen your terminal and now you will also have `docker-compose` command available in your WSL.
 
 ## Extra lib: lf File Manager
+Finally, I'd like to share [lf library](https://github.com/gokcehan/lf/tree/master) that's used to navigate through files and folders in an easy way.
+![fd34c8b1f1ac26a8033f2ae1ff5f1439](https://user-images.githubusercontent.com/20981122/70489858-71983700-1ac2-11ea-9047-7fc2dce1cf46.jpg)
+
+Download the version relevant to your operating system, I'll put Linux x64-bit version.
+```bash
+wget https://github.com/gokcehan/lf/releases/download/r6/lf-linux-amd64.tar.gz \
+-O lf-linux-amd64.tar.gz
+```
+
+After downloading the package, extract it using tar
+```bash
+tar xvf lf-linux-amd64.tar.gz
+```
+
+Make the file executable
+```bash
+chmod +x lf
+```
+
+Copy the file to `/usr/local/bin` directory.
+```bash
+sudo mv lf /usr/local/bin
+```
+
+Reopen your terminal, and now you can use the lf command running `lf` in your terminal.
+
+
+### References
+I've used the following resources in order to write this guide, you should definetly go and check'em out.
+- [Fluent terminal config](https://dev.to/dylantientcheu/transforming-your-ugly-windows-terminal-to-a-unicorn-577k)
+- [Setting up nodejs](https://gist.github.com/noygal/6b7b1796a92d70e24e35f94b53722219)
+- [Installing Docker](https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4)
+- [Installing Docker Compose](https://phoenixnap.com/kb/install-docker-compose-ubuntu)
+- [Useful zsh plugins](https://gist.github.com/dogrocker/1efb8fd9427779c827058f873b94df95)
+- [Install powerline fonts](https://medium.com/@slmeng/how-to-install-powerline-fonts-in-windows-b2eedecace58)
